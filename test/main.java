@@ -1,6 +1,14 @@
 
+import Structures.Empty;
+import Structures.King;
+import Structures.Knight;
+import Structures.Mapping;
+import Structures.Movement;
+import Structures.Pawn;
+import Structures.Piece;
 import Structures.Tree;
 import Structures.TreeNode;
+import java.util.ArrayList;
 
 public class main {
 
@@ -14,6 +22,5 @@ public class main {
         System.out.println("=======================");
         ((TreeNode) node.getRoot().getChildrens().at(0)).delete();
         node.PreeOrden();
-
-    }
+    } 
 }
