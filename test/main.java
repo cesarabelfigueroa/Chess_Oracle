@@ -1,11 +1,11 @@
 
-import Structures.Empty;
-import Structures.King;
-import Structures.Knight;
-import Structures.Mapping;
-import Structures.Movement;
-import Structures.Pawn;
-import Structures.Piece;
+import Resources.Empty;
+import Resources.King;
+import Resources.Knight;
+import Resources.Mapping;
+import Resources.Movement;
+import Resources.Pawn;
+import Resources.Piece;
 import Structures.Tree;
 import Structures.TreeNode;
 import java.util.ArrayList;

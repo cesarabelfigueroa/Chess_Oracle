@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Structures;
+package Resources;
 
-/**
- *
- * @author Herbert Paz
- */
 public class Empty extends Piece{
 
     public Empty(int jugador) {
@@ -25,5 +16,4 @@ public class Empty extends Piece{
     public boolean validation(Piece[][] board, int x1, int y1, int x2, int y2) {
         return false;
     }
-    
 }

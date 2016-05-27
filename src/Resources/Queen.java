@@ -1,4 +1,4 @@
-package Structures;
+package Resources;
 
 /**
  *
@@ -13,6 +13,5 @@ public class Queen extends Piece{
     @Override
     public boolean validation(Piece[][] board, int x1, int y1, int x2, int y2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+    }   
 }

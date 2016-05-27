@@ -1,9 +1,6 @@
-package Structures;
-/**
- *
- * @author Herbert Paz
- */
+package Resources;
 public class Mapping {
+
     private Piece[][] board;
     private Movement last;
 
@@ -33,8 +30,6 @@ public class Mapping {
 
     @Override
     public String toString() {
-        return "" + last ;
+        return "" + last.toString();
     }
-    
-    
 }

@@ -1,10 +1,7 @@
-package Structures;
+package Resources;
 
-/**
- *
- * @author Herbert Paz
- */
 public class Movement {
+
     private Piece piece;
     private String coor1;
     private String coor2;
@@ -44,8 +41,6 @@ public class Movement {
 
     @Override
     public String toString() {
-        return "La pieza "  + piece.toString() + " se movio de: " + coor1 + " a: " + coor2;
+        return "La pieza " + piece.toString() + " se movio de: " + coor1 + " a: " + coor2;
     }
-    
-    
 }
