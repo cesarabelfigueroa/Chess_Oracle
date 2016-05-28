@@ -51,136 +51,138 @@ public class main {
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont, LinkedList lista_peon) {
-        LinkedList check = new LinkedList();
-        LinkedList knight = new LinkedList();
-        LinkedList queen = new LinkedList();
-        int player;
-        if (cont % 2 == 0) {
-            player = 1;
-        } else {
-            player = 2;
-        }
-        System.out.println("EL jugador es: "+player);
-        System.out.println("");
-        Mapping temp = (Mapping) currentNode.getValue();
-        Piece[][] father_board = temp.getBoard();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                for (int k = 0; k < 8; k++) {
-                    for (int l = 0; l < 8; l++) {
-                        if (father_board[i][j].getPlayer() == player) {
-                            if (father_board[i][j].validation(father_board, i, j, k, l)) {
-                                Piece[][] board = copy_board(father_board);
-                                if (board[i][j].getPlayer() == 1 && (board[k][l].getPlayer() == 2 || board[k][l].getPlayer() == 0)) {
-                                    int x1, y1, x2, y2;
-                                    if (cont == 0) {
-                                        x1 = i;
-                                        y1 = j;
-                                        x2 = k;
-                                        y2 = l;
-                                    } else {
-                                        Mapping father = (Mapping) currentNode.getParent().getValue();
-                                        Movement previous = father.getLast();
-                                        String coo1 = previous.getCoor1();
-                                        String coo2 = previous.getCoor2();
-                                        String[] split1 = coo1.split(",");
-                                        String[] split2 = coo2.split(",");
-                                        x1 = Integer.parseInt(split1[0]);
-                                        y1 = Integer.parseInt(split1[1]);
-                                        x2 = Integer.parseInt(split2[0]);
-                                        y2 = Integer.parseInt(split2[1]);
-                                    }
-                                    if (x1 == k && y1 == l && x2 == i && y2 == j) {
-                                    } else {
-                                        if (board[k][l] instanceof King) {
+        if (currentNode.getDepth() < 10) {
+            LinkedList check = new LinkedList();
+            LinkedList knight = new LinkedList();
+            LinkedList queen = new LinkedList();
+            int player;
+            if (cont % 2 == 0) {
+                player = 1;
+            } else {
+                player = 2;
+            }
+            System.out.println("EL jugador es: " + player);
+            System.out.println("");
+            Mapping temp = (Mapping) currentNode.getValue();
+            Piece[][] father_board = temp.getBoard();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    for (int k = 0; k < 8; k++) {
+                        for (int l = 0; l < 8; l++) {
+                            if (father_board[i][j].getPlayer() == player) {
+                                if (father_board[i][j].validation(father_board, i, j, k, l)) {
+                                    Piece[][] board = copy_board(father_board);
+                                    if (board[i][j].getPlayer() == 1 && (board[k][l].getPlayer() == 2 || board[k][l].getPlayer() == 0)) {
+                                        int x1, y1, x2, y2;
+                                        if (cont == 0) {
+                                            x1 = i;
+                                            y1 = j;
+                                            x2 = k;
+                                            y2 = l;
                                         } else {
-                                            board[k][l] = board[i][j];
-                                            board[i][j] = new Empty(0);
-                                            String coor1 = i + "," + j;
-                                            String coor2 = k + "," + l;
-                                            Movement last = new Movement(board[k][l], coor1, coor2);
-                                            for (int a = 0; a < 8; a++) {
-                                                for (int b = 0; b < 8; b++) {
-                                                    System.out.print(board[a][b] + " ");
-                                                }
-                                                System.out.println("");
-                                            }
-                                            Mapping map = new Mapping(board, last);
-                                            if (board[k][l] instanceof Pawn) {
-                                                if (k == 0) {
-                                                    lista_peon.push_back(map);
-                                                }
-                                            }
-
-                                            if (isCheck(board, player)) {
-                                                check.push_back(map);
-                                            }
-
-                                            if (wasEatKhigth(father_board, board)) {
-                                                knight.push_back(map);
-                                            }
-
-                                            if (wasEatQueen(father_board, board)) {
-                                                queen.push_back(map);
-                                            }
-                                            System.out.println("");
-                                            currentNode.addSon(map);
+                                            Mapping father = (Mapping) currentNode.getParent().getValue();
+                                            Movement previous = father.getLast();
+                                            String coo1 = previous.getCoor1();
+                                            String coo2 = previous.getCoor2();
+                                            String[] split1 = coo1.split(",");
+                                            String[] split2 = coo2.split(",");
+                                            x1 = Integer.parseInt(split1[0]);
+                                            y1 = Integer.parseInt(split1[1]);
+                                            x2 = Integer.parseInt(split2[0]);
+                                            y2 = Integer.parseInt(split2[1]);
                                         }
-                                    }
-                                } else if (board[i][j].getPlayer() == 2 && (board[k][l].getPlayer() == 1 || board[k][l].getPlayer() == 0)) {
-                                    int x1, y1, x2, y2;
-                                    if (cont == 0) {
-                                        x1 = i;
-                                        y1 = j;
-                                        x2 = k;
-                                        y2 = l;
-                                    } else {
-                                        Mapping father = (Mapping) currentNode.getParent().getValue();
-                                        Movement previous = father.getLast();
-                                        String coo1 = previous.getCoor1();
-                                        String coo2 = previous.getCoor2();
-                                        String[] split1 = coo1.split(",");
-                                        String[] split2 = coo2.split(",");
-                                        x1 = Integer.parseInt(split1[0]);
-                                        y1 = Integer.parseInt(split1[1]);
-                                        x2 = Integer.parseInt(split2[0]);
-                                        y2 = Integer.parseInt(split2[1]);
-                                    }
-                                    if (x1 == k && y1 == l && x2 == i && y2 == j) {
-                                    } else {
-                                        if (board[k][l] instanceof King) {
+                                        if (x1 == k && y1 == l && x2 == i && y2 == j) {
                                         } else {
-                                            board[k][l] = board[i][j];
-                                            board[i][j] = new Empty(0);
-                                            String coor1 = i + "," + j;
-                                            String coor2 = k + "," + l;
-                                            Movement last = new Movement(board[k][l], coor1, coor2);
-                                            Mapping map = new Mapping(board, last);
-                                            if (board[k][l] instanceof Pawn) {
-                                                if (k == 6) {
-                                                    lista_peon.push_back(map);
+                                            if (board[k][l] instanceof King) {
+                                            } else {
+                                                board[k][l] = board[i][j];
+                                                board[i][j] = new Empty(0);
+                                                String coor1 = i + "," + j;
+                                                String coor2 = k + "," + l;
+                                                Movement last = new Movement(board[k][l], coor1, coor2);
+                                                for (int a = 0; a < 8; a++) {
+                                                    for (int b = 0; b < 8; b++) {
+                                                        System.out.print(board[a][b] + " ");
+                                                    }
+                                                    System.out.println("");
                                                 }
-                                            }
-                                            if (isCheck(board, player)) {
-                                                check.push_back(map);
-                                            }
+                                                Mapping map = new Mapping(board, last);
+                                                if (board[k][l] instanceof Pawn) {
+                                                    if (k == 0) {
+                                                        lista_peon.push_back(map);
+                                                    }
+                                                }
 
-                                            if (wasEatKhigth(father_board, board)) {
-                                                knight.push_back(map);
-                                            }
+                                                if (isCheck(board, player)) {
+                                                    check.push_back(map);
+                                                }
 
-                                            if (wasEatQueen(father_board, board)) {
-                                                queen.push_back(map);
-                                            }
+                                                if (wasEatKhigth(father_board, board)) {
+                                                    knight.push_back(map);
+                                                }
 
-                                            currentNode.addSon(map);
-                                            for (int a = 0; a < 8; a++) {
-                                                for (int b = 0; b < 8; b++) {
-                                                    System.out.print(board[a][b] + " ");
+                                                if (wasEatQueen(father_board, board)) {
+                                                    queen.push_back(map);
+                                                }
+                                                System.out.println("");
+                                                currentNode.addSon(map);
+                                            }
+                                        }
+                                    } else if (board[i][j].getPlayer() == 2 && (board[k][l].getPlayer() == 1 || board[k][l].getPlayer() == 0)) {
+                                        int x1, y1, x2, y2;
+                                        if (cont == 0) {
+                                            x1 = i;
+                                            y1 = j;
+                                            x2 = k;
+                                            y2 = l;
+                                        } else {
+                                            Mapping father = (Mapping) currentNode.getParent().getValue();
+                                            Movement previous = father.getLast();
+                                            String coo1 = previous.getCoor1();
+                                            String coo2 = previous.getCoor2();
+                                            String[] split1 = coo1.split(",");
+                                            String[] split2 = coo2.split(",");
+                                            x1 = Integer.parseInt(split1[0]);
+                                            y1 = Integer.parseInt(split1[1]);
+                                            x2 = Integer.parseInt(split2[0]);
+                                            y2 = Integer.parseInt(split2[1]);
+                                        }
+                                        if (x1 == k && y1 == l && x2 == i && y2 == j) {
+                                        } else {
+                                            if (board[k][l] instanceof King) {
+                                            } else {
+                                                board[k][l] = board[i][j];
+                                                board[i][j] = new Empty(0);
+                                                String coor1 = i + "," + j;
+                                                String coor2 = k + "," + l;
+                                                Movement last = new Movement(board[k][l], coor1, coor2);
+                                                Mapping map = new Mapping(board, last);
+                                                if (board[k][l] instanceof Pawn) {
+                                                    if (k == 6) {
+                                                        lista_peon.push_back(map);
+                                                    }
+                                                }
+                                                if (isCheck(board, player)) {
+                                                    check.push_back(map);
+                                                }
+
+                                                if (wasEatKhigth(father_board, board)) {
+                                                    knight.push_back(map);
+                                                }
+
+                                                if (wasEatQueen(father_board, board)) {
+                                                    queen.push_back(map);
+                                                }
+
+                                                currentNode.addSon(map);
+                                                for (int a = 0; a < 8; a++) {
+                                                    for (int b = 0; b < 8; b++) {
+                                                        System.out.print(board[a][b] + " ");
+                                                    }
+                                                    System.out.println("");
                                                 }
                                                 System.out.println("");
                                             }
-                                            System.out.println("");
                                         }
                                     }
                                 }
