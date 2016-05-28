@@ -12,7 +12,7 @@ public class Queen extends Piece {
 
     @Override
     public boolean validation(Piece[][] board, int x1, int y1, int x2, int y2) {
-        return (tower(board, x1, y1, x2, y2) || bishop(board, x1, y1, x2, y2)) == true;
+        return (tower(board, x1, y1, x2, y2) || bishop(board, x1, y1, x2, y2));
     }
 
     private boolean tower(Piece[][] board, int x1, int y1, int x2, int y2) {

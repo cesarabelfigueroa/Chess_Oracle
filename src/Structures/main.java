@@ -12,6 +12,7 @@ import Resources.Empty;
 import Resources.King;
 import Resources.Knight;
 import Resources.Movement;
+import Resources.Queen;
 
 /**
  *
@@ -29,14 +30,14 @@ public class main {
         //principal_board[1][1] = new Pawn(1);
         principal_board[0][4] = new Knight(2);
         principal_board[1][3] = new King(2);
+        principal_board[1][7] = new King(1);
         principal_board[1][6] = new Pawn(2);
         principal_board[3][3] = new Pawn(1);
         principal_board[3][5] = new Pawn(1);
-        //principal_board[5][4] = new King(1);
         Movement principal = new Movement(new Empty(0), "0", "0");
         Tree root = new Tree(new Mapping(principal_board, principal));
         LinkedList lista_peon = new LinkedList();
-        traverse_tree(root.getRoot(), 0,lista_peon);
+        traverse_tree(root.getRoot(), 0, lista_peon);
     }
 
     public static Piece[][] copy_board(Piece[][] board) {
@@ -50,13 +51,15 @@ public class main {
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont, LinkedList lista_peon) {
+        LinkedList check = new LinkedList();
+        LinkedList knight = new LinkedList();
+        LinkedList queen = new LinkedList();
         int player;
         if (cont % 2 == 0) {
             player = 1;
         } else {
             player = 2;
         }
-        System.out.println(player);
         Mapping temp = (Mapping) currentNode.getValue();
         Piece[][] father_board = temp.getBoard();
         for (int i = 0; i < 8; i++) {
@@ -72,22 +75,33 @@ public class main {
                                     String coor1 = "(" + i + "," + j + ")";
                                     String coor2 = "(" + k + "," + l + ")";
                                     Movement last = new Movement(board[k][l], coor1, coor2);
-                                    ////////////
-                                    System.out.println(last.toString());
+
                                     for (int a = 0; a < 8; a++) {
                                         for (int b = 0; b < 8; b++) {
                                             System.out.print(board[a][b] + " ");
                                         }
                                         System.out.println("");
                                     }
-                                    //////////////
-                                    Mapping map=new Mapping(board, last);
+                                    Mapping map = new Mapping(board, last);
                                     if (board[k][l] instanceof Pawn) {
-                                        if (k==0) {
+                                        if (k == 0) {
                                             lista_peon.push_back(map);
-                                            System.err.println("EL TAMANO DE LA LISTA ES "+lista_peon.size());
+                                            System.err.println("EL TAMANO DE LA LISTA ES " + lista_peon.size());
                                         }
                                     }
+
+                                    if (isCheck(board, player)) {
+                                        check.push_back(map);
+                                    }
+
+                                    if (wasEatKhigth(father_board, board)) {
+                                        knight.push_back(map);
+                                    }
+
+                                    if (wasEatQueen(father_board, board)) {
+                                        queen.push_back(map);
+                                    }
+                                    System.out.println("");
                                     currentNode.addSon(map);
                                 } else if (board[i][j].getPlayer() == 2 && (board[k][l].getPlayer() == 1 || board[k][l].getPlayer() == 0)) {
                                     board[k][l] = board[i][j];
@@ -95,16 +109,27 @@ public class main {
                                     String coor1 = "(" + i + "," + j + ")";
                                     String coor2 = "(" + k + "," + l + ")";
                                     Movement last = new Movement(board[k][l], coor1, coor2);
-                                    currentNode.addSon(new Mapping(board, last));
-                                    //////////////////
-                                    System.out.println(last.toString());
+                                    Mapping map = new Mapping(board, last);
+                                    currentNode.addSon(map);
+                                    if (isCheck(board, player)) {
+                                        check.push_back(map);
+                                    }
+
+                                    if (wasEatKhigth(father_board, board)) {
+                                        knight.push_back(map);
+                                    }
+
+                                    if (wasEatQueen(father_board, board)) {
+                                        queen.push_back(map);
+                                    }
+
                                     for (int a = 0; a < 8; a++) {
                                         for (int b = 0; b < 8; b++) {
                                             System.out.print(board[a][b] + " ");
                                         }
                                         System.out.println("");
                                     }
-                                    ///////////////
+                                    System.out.println("");
                                 }
                             }
                         }
@@ -113,9 +138,222 @@ public class main {
             }
         }
         for (int i = 0; i < currentNode.getChildCount(); i++) {
-            traverse_tree(currentNode.getChildAt(i), ++cont,lista_peon);
+            traverse_tree(currentNode.getChildAt(i), ++cont, lista_peon);
         }
-
     }
 
+    public static boolean wasEatKhigth(Piece[][] board, Piece[][] board2) {
+        int horse1 = 0;
+        int horse2 = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof Knight) {
+                    horse1++;
+                }
+                if (board2[i][j] instanceof Knight) {
+                    horse2++;
+                }
+            }
+        }
+        return horse1 == horse2;
+    }
+
+    public static boolean wasEatQueen(Piece[][] board, Piece[][] board2) {
+        int queen1 = 0;
+        int queen2 = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof Knight) {
+                    queen1++;
+                }
+                if (board2[i][j] instanceof Knight) {
+                    queen2++;
+                }
+            }
+        }
+        return queen1 == queen2;
+    }
+
+    public static boolean isCheck(Piece[][] board, int player) {
+        String placeToKing = placeToKing(board, player);
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                String tempPosition = "" + i + "," + j;
+                if (isValidMove(board, tempPosition, placeToKing)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static String placeToKing(Piece[][] board, int player) {
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                if (board[i][j] instanceof King && board[i][j].getPlayer() == player) {
+                    return "" + i + "," + j;
+                }
+            }
+        }
+        return "";
+    }
+
+    public static boolean isValidMove(Piece[][] board, String initial, String end) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        if (endX < 0 || endX > 7 || endY < 0 || endY > 7 || initialX < 0 || initialX > 7 || initialY < 0 || initialY > 7) {
+            return false;
+        } else {
+            boolean isEmpty = isEmpty(board, initial);
+            boolean isValidDestiny = isValidDestiny(board, initial, end);
+            boolean isValidMove = board[initialX][initialY].validation(board, initialX, initialY, endX, endY);
+            boolean isHungryPeon = isHungryPeon(board, initial, end);
+            return !isEmpty && isValidDestiny && (isValidMove || isHungryPeon);
+        }
+    }
+
+    public static boolean isSomethingInMiddle(Piece[][] board, String initial, String end) {
+        int initX = Integer.parseInt(initial.split(",")[0]);
+        int initY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        Piece attacker = board[initX][initY];
+        Piece attacked = board[endX][endY];
+        if (attacker instanceof Pawn) {
+            return (!(attacked instanceof Empty)) && !isHungryPeon(board, initial, end);
+        } else if (attacker instanceof Knight) {
+            return false;
+        } else if (attacker instanceof King) {
+            return false;
+        } else if (board[initX][initY] instanceof Queen) {
+            if (initX + initY == endX + endY) {
+                if (endX < initX && endY > initY) {
+                    int referencesY = endY - 1;
+                    for (int i = endX + 1; i < initX; ++i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY--;
+                    }
+                    return false;
+                } else if (endX > initX && endY < initY) {
+                    int referencesY = endY + 1;
+                    for (int i = endX - 1; i > initX; --i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY++;
+                    }
+                    return false;
+                }
+            } else if (initX - initY == endX - endY) {
+                if (endX < initX && endY < initY) {
+                    int referencesY = endY + 1;
+                    for (int i = endX + 1; i < initX; ++i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY++;
+                    }
+                    return false;
+                } else if (endX > initX && endY > initY) {
+                    int referencesY = endY - 1;
+                    for (int i = endX - 1; i > initX; --i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY--;
+                    }
+                    return false;
+                }
+            }
+            if (endY > initY) { // se mueve a la derecha.
+                for (int i = endY - 1; i > initY; --i) {
+                    if (!(board[initX][i] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else if (initY > endY) { // se mueve a la izquierda.
+                for (int i = endY + 1; i < initY; ++i) {
+                    if (!(board[initX][i] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else if (endX > initX) { // se mueve a abajo.
+                for (int i = endX - 1; i > initX; --i) {
+                    if (!(board[i][initY] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else if (initX > endX) { // se mueve a la arriba.
+                for (int i = endX + 1; i < initX; ++i) {
+                    if (!(board[i][initY] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isHungryPeon(Piece[][] board, String initial, String end) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        Piece attacker = board[initialX][initialY];
+        Piece attacked = board[endX][endY];
+        if (attacker instanceof Pawn) {
+            if (!(attacked instanceof Empty)) {
+                if (attacker.getPlayer() == 1) {
+                    if (endX == initialX - 1 && endY == initialY + 1) {
+                        return true;
+                    } else if (endX == initialX - 1 && endY == initialY - 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (attacker.getPlayer() == 2) {
+                    if (endX == initialX + 1 && endY == initialY + 1) {
+                        return true;
+                    } else if (endX == initialX + 1 && endY == initialY - 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isEmpty(Piece[][] board, String initial) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        return board[initialX][initialY] instanceof Empty;
+    }
+
+    public static boolean isValidDestiny(Piece[][] board, String initial, String end) {
+        return !isSameColor(board, initial, end) && !isSomethingInMiddle(board, initial, end);
+    }
+
+    public static boolean isSameColor(Piece[][] board, String initial, String end) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        return board[endX][endY].getPlayer() == board[initialX][initialY].getPlayer();
+    }
 }
