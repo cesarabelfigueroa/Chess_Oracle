@@ -4,11 +4,27 @@ public class TreeNode {
 
     private Object value;
     private TreeNode parent;
+    private int deepth = 0;
+
     private LinkedList Childrens = new LinkedList();
 
     public TreeNode(Object value, TreeNode parent) {
         this.value = value;
         this.parent = parent;
+    }
+
+    public TreeNode(Object value, TreeNode parent, int deepth) {
+        this.value = value;
+        this.parent = parent;
+        this.deepth = deepth;
+    }
+
+    public int getDeepth() {
+        return deepth;
+    }
+
+    public void setDeepth(int deepth) {
+        this.deepth = deepth;
     }
 
     public Object getValue() {
@@ -56,7 +72,7 @@ public class TreeNode {
     }
 
     public void addSon(Object son) {
-        Childrens.insert(Childrens.getSize(), new TreeNode(son, this));
+        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.deepth++));
     }
 
     public boolean isLeaf() {
@@ -73,20 +89,6 @@ public class TreeNode {
 
     public void delete() {
         parent.Childrens.remove(parent.getChildrens().find(this));
-    }
-
-    public int getDepth() {
-        int depth = 0;
-        if (parent != null) {
-            TreeNode temporal = parent;
-            depth++;
-            while (temporal.getParent() != null) {
-                depth++;
-                temporal = temporal.getParent();
-            }
-        }
-
-        return depth;
     }
 
     public LinkedList getBranches() {
