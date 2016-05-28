@@ -5,6 +5,14 @@
  */
 package Structures;
 
+import Resources.Piece;
+import Resources.Mapping;
+import Resources.Pawn;
+import Resources.Empty;
+import Resources.King;
+import Resources.Knight;
+import Resources.Movement;
+
 /**
  *
  * @author Herbert Paz
@@ -27,12 +35,6 @@ public class main {
         //principal_board[5][4] = new King(1);
         Movement principal = new Movement(new Empty(0), "0", "0");
         Tree root = new Tree(new Mapping(principal_board, principal));
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                System.out.print(principal_board[i][j] + " ");
-            }
-            System.out.println("");
-        }
         LinkedList lista_peon = new LinkedList();
         traverse_tree(root.getRoot(), 0,lista_peon);
     }

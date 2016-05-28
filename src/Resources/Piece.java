@@ -1,5 +1,5 @@
 
-package Structures;
+package Resources;
 
 /**
  *
@@ -24,5 +24,4 @@ public abstract class Piece implements Interface{
     public String toString() {
         return "Piece{" + "jugador=" + player + '}';
     }
-    
 }

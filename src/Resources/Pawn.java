@@ -1,11 +1,7 @@
-package Structures;
+package Resources;
 
 import static java.lang.Math.abs;
 
-/**
- *
- * @author Herbert Paz
- */
 public class Pawn extends Piece {
 
     public Pawn(int player) {
@@ -37,9 +33,7 @@ public class Pawn extends Piece {
             } else if ((board[x2][y2].getPlayer()) == 2) {
                 return ((x2 - x1) == 1) && (abs(y1 - y2) == 1);
             }
-
         }
         return false;
     }
-
 }
