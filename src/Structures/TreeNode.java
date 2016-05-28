@@ -72,7 +72,7 @@ public class TreeNode {
     }
 
     public void addSon(Object son) {
-        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.depth++));
+        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.depth+1));
     }
 
     public boolean isLeaf() {
