@@ -59,6 +59,18 @@ public class TreeNode {
         Childrens.insert(Childrens.getSize(), new TreeNode(son, this));
     }
     
+    public boolean isLeaf(){
+        return Childrens.getSize()==0;
+    }
+    
+    public int getChildCount(){
+        return Childrens.getSize();
+    }
+    
+    public TreeNode getChildAt(int i){
+        return (TreeNode)(Childrens.at(i));
+    }
+    
     public void delete() {
         parent.Childrens.remove(parent.getChildrens().find(this));
     }

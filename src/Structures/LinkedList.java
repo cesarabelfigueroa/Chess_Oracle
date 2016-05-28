@@ -113,4 +113,21 @@ public class LinkedList {
         size += list.getSize();
         insert(0, list.getHead());
     }
+    
+    public void push_back(Object value){
+        insert(size(),value);
+    }
+    
+    public int size(){
+        int size = 0;
+        if(head != null){
+            size++;
+            Node temp = head;
+            while(temp.hasNext()){
+                size++;
+                temp = temp.getNext();
+            }
+        }
+        return size;
+    }
 }
