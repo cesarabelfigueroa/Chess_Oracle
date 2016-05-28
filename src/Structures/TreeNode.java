@@ -4,7 +4,7 @@ public class TreeNode {
 
     private Object value;
     private TreeNode parent;
-    private int deepth = 0;
+    private int depth = 0;
 
     private LinkedList Childrens = new LinkedList();
 
@@ -13,18 +13,18 @@ public class TreeNode {
         this.parent = parent;
     }
 
-    public TreeNode(Object value, TreeNode parent, int deepth) {
+    public TreeNode(Object value, TreeNode parent, int depth) {
         this.value = value;
         this.parent = parent;
-        this.deepth = deepth;
+        this.depth = depth;
     }
 
-    public int getDeepth() {
-        return deepth;
+    public int getDepth() {
+        return depth;
     }
 
-    public void setDeepth(int deepth) {
-        this.deepth = deepth;
+    public void setDepth(int deepth) {
+        this.depth = deepth;
     }
 
     public Object getValue() {
@@ -72,7 +72,7 @@ public class TreeNode {
     }
 
     public void addSon(Object son) {
-        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.deepth++));
+        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.depth++));
     }
 
     public boolean isLeaf() {
