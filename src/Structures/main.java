@@ -28,7 +28,7 @@ public class main {
             }
         }
         //principal_board[1][1] = new Pawn(1);
-        principal_board[0][4] = new Knight(2);
+        //principal_board[0][4] = new Knight(2);
         principal_board[1][3] = new King(2);
         principal_board[1][6] = new Pawn(2);
         principal_board[3][3] = new Pawn(1);
@@ -38,6 +38,7 @@ public class main {
         Tree root = new Tree(new Mapping(principal_board, principal));
         LinkedList lista_peon = new LinkedList();
         traverse_tree(root.getRoot(), 0, lista_peon);
+        System.out.println(lista_peon.size());
     }
 
     public static Piece[][] copy_board(Piece[][] board) {
@@ -51,7 +52,7 @@ public class main {
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont, LinkedList lista_peon) {
-        if (currentNode.getDepth() < 10) {
+        if (currentNode.getDepth() < 5) {
             LinkedList check = new LinkedList();
             LinkedList knight = new LinkedList();
             LinkedList queen = new LinkedList();
@@ -110,6 +111,7 @@ public class main {
                                                 if (board[k][l] instanceof Pawn) {
                                                     if (k == 0) {
                                                         lista_peon.push_back(map);
+                                                        System.err.println("LLEGOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                                                     }
                                                 }
 
@@ -129,6 +131,23 @@ public class main {
                                             }
                                         }
                                     } else if (board[i][j].getPlayer() == 2 && (board[k][l].getPlayer() == 1 || board[k][l].getPlayer() == 0)) {
+                                        if (board[k][l] instanceof King) {
+                                        } else {
+                                            board[k][l] = board[i][j];
+                                            board[i][j] = new Empty(0);
+                                            String coor1 = i + "," + j;
+                                            String coor2 = k + "," + l;
+                                            Movement last = new Movement(board[k][l], coor1, coor2);
+                                            Mapping map = new Mapping(board, last);
+                                            currentNode.addSon(map);
+                                            for (int a = 0; a < 8; a++) {
+                                                for (int b = 0; b < 8; b++) {
+                                                    System.out.print(board[a][b] + " ");
+                                                }
+                                                System.out.println("");
+                                            }
+                                            System.out.println("");
+                                        }
                                         int x1, y1, x2, y2;
                                         if (cont == 0) {
                                             x1 = i;
