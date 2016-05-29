@@ -20,6 +20,11 @@ import Resources.Queen;
  */
 public class main {
 
+    private static LinkedList check = new LinkedList();
+    private static LinkedList knight = new LinkedList();
+    private static LinkedList queen = new LinkedList();
+    private static LinkedList lista_peon = new LinkedList();
+
     public static void main(String[] args) {
         Piece[][] principal_board = new Piece[8][8];
         for (int i = 0; i < 8; i++) {
@@ -34,8 +39,9 @@ public class main {
         principal_board[4][4] = new King(1);
         Movement principal = new Movement(new Empty(0), "0,0", "0,0");
         Tree root = new Tree(new Mapping(principal_board, principal));
-        LinkedList lista_peon = new LinkedList();
-        mapping(root.getRoot(), 0, lista_peon);
+
+        mapping(root.getRoot(), 0);
+        System.out.println(lista_peon.getSize());
     }
 
     public static Piece[][] copy_board(Piece[][] board) {
@@ -48,24 +54,21 @@ public class main {
         return temporal;
     }
 
-    public static void mapping(TreeNode currentNode, int cont, LinkedList lista_peon) {
-        traverse_tree(currentNode, cont, lista_peon);
+    public static void mapping(TreeNode currentNode, int cont) {
+        traverse_tree(currentNode, cont);
         if (currentNode.getParent() != null) {
             if (currentNode.getRigthBrother() != null) {
-                mapping(currentNode.getRigthBrother(), cont, lista_peon);
+                mapping(currentNode.getRigthBrother(), cont);
             } else if (currentNode.getParent().getLeftSon().getChildAt(0) != null) {
-                mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1, lista_peon);
+                mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1);
             }
         } else {
-            mapping(currentNode.getLeftSon(), cont + 1, lista_peon);
+            mapping(currentNode.getLeftSon(), cont + 1);
         }
     }
 
-    public static void traverse_tree(TreeNode currentNode, int cont, LinkedList lista_peon) {
+    public static void traverse_tree(TreeNode currentNode, int cont) {
         if (currentNode.getDepth() < 25) {
-            LinkedList check = new LinkedList();
-            LinkedList knight = new LinkedList();
-            LinkedList queen = new LinkedList();
             int player, enemy;
             if (cont % 2 == 0) {
                 player = 1;
