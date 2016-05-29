@@ -27,8 +27,6 @@ public class main {
                 principal_board[i][j] = new Empty(0);
             }
         }
-        //principal_board[1][1] = new Pawn(1);
-        //principal_board[0][4] = new Knight(2);
         principal_board[1][3] = new King(2);
         principal_board[1][6] = new Pawn(2);
         principal_board[3][3] = new Pawn(1);
@@ -37,9 +35,7 @@ public class main {
         Movement principal = new Movement(new Empty(0), "0,0", "0,0");
         Tree root = new Tree(new Mapping(principal_board, principal));
         LinkedList lista_peon = new LinkedList();
-        //traverse_tree(root.getRoot(), 0, lista_peon);
         mapping(root.getRoot(), 0, lista_peon);
-        System.out.println(lista_peon.size());
     }
 
     public static Piece[][] copy_board(Piece[][] board) {
@@ -53,16 +49,14 @@ public class main {
     }
 
     public static void mapping(TreeNode currentNode, int cont, LinkedList lista_peon) {
+        traverse_tree(currentNode, cont, lista_peon);
         if (currentNode.getParent() != null) {
             if (currentNode.getRigthBrother() != null) {
-                traverse_tree(currentNode, cont, lista_peon);
                 mapping(currentNode.getRigthBrother(), cont, lista_peon);
             } else if (currentNode.getParent().getLeftSon().getChildAt(0) != null) {
-                traverse_tree(currentNode, cont, lista_peon);
                 mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1, lista_peon);
             }
         } else {
-            traverse_tree(currentNode, 0, lista_peon);
             mapping(currentNode.getLeftSon(), cont + 1, lista_peon);
         }
     }
@@ -72,11 +66,13 @@ public class main {
             LinkedList check = new LinkedList();
             LinkedList knight = new LinkedList();
             LinkedList queen = new LinkedList();
-            int player;
+            int player, enemy;
             if (cont % 2 == 0) {
                 player = 1;
+                enemy = 2;
             } else {
                 player = 2;
+                enemy = 1;
             }
             System.out.println("EL jugador es: " + player);
             System.out.println("");
@@ -126,11 +122,10 @@ public class main {
                                             if (board[k][l] instanceof Pawn) {
                                                 if (k == 0) {
                                                     lista_peon.push_back(map);
-                                                    System.err.println("LLEGOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                                                 }
                                             }
 
-                                            if (isCheck(board, player)) {
+                                            if (isCheck(board, enemy)) {
                                                 check.push_back(map);
                                             }
 
@@ -177,7 +172,8 @@ public class main {
                                                     lista_peon.push_back(map);
                                                 }
                                             }
-                                            if (isCheck(board, player)) {
+
+                                            if (isCheck(board, enemy)) {
                                                 check.push_back(map);
                                             }
 
