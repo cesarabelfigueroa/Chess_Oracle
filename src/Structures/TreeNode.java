@@ -60,7 +60,16 @@ public class TreeNode {
     }
 
     public TreeNode getRigthBrother() {
-        return (TreeNode) parent.getChildrens().at(parent.getChildrens().find(this) + 1);
+        if (parent != null) {
+            int index = parent.getChildrens().find(this) + 1;
+            if (index < parent.getChildrens().getSize()) {
+                return (TreeNode) parent.getChildrens().at(index);
+
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 
     public TreeNode getLeftBroter() {
@@ -72,7 +81,7 @@ public class TreeNode {
     }
 
     public void addSon(Object son) {
-        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.depth+1));
+        Childrens.insert(Childrens.getSize(), new TreeNode(son, this, this.depth + 1));
     }
 
     public boolean isLeaf() {

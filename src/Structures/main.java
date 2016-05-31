@@ -59,17 +59,15 @@ public class main {
         if (currentNode.getParent() != null) {
             if (currentNode.getRigthBrother() != null) {
                 mapping(currentNode.getRigthBrother(), cont);
+            } else if (currentNode.getParent().getRigthBrother() != null) {
+                if (currentNode.getParent().getRigthBrother().getLeftSon() != null) {
+                    mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1);
+                }
             } else if (currentNode.getParent().getLeftSon().getChildAt(0) != null) {
                 mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1);
-            } else if (currentNode.getParent() != null) {
-                if (currentNode.getParent().getRigthBrother() != null) {
-                    if (currentNode.getParent().getRigthBrother().getLeftSon() != null) {
-                        mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1);
-                    }
-                }
             }
         } else {
-            mapping(currentNode.getLeftSon(), cont + 1);
+            mapping(currentNode.getChildAt(0), cont + 1);
         }
     }
 
