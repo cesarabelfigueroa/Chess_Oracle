@@ -3,20 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Structures;
+
 import Resources.Empty;
 import Resources.King;
 import Resources.Knight;
+import Resources.Mapping;
+import Resources.Movement;
 import Resources.Pawn;
 import Resources.Piece;
 import Resources.Queen;
+import static Structures.main.isValidMove;
+import static Structures.main.mapping;
 import java.awt.Color;
+import static java.lang.Math.abs;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import org.jvnet.substance.SubstanceLookAndFeel;
+
 /**
  *
  * @author Herbert Paz
@@ -24,12 +31,16 @@ import org.jvnet.substance.SubstanceLookAndFeel;
 public class Principal extends javax.swing.JFrame {
 
     Piece[][] principal_board = new Piece[8][8];
-    JLabel[][] matriz_label= new JLabel[8][8];
-    
+    JLabel[][] matriz_label = new JLabel[8][8];
+    private static LinkedList check = new LinkedList();
+    private static LinkedList knight = new LinkedList();
+    private static LinkedList queen = new LinkedList();
+    private static LinkedList lista_peon = new LinkedList();
+
     public Principal() {
         JFrame.setDefaultLookAndFeelDecorated(true);
         SubstanceLookAndFeel.setSkin("org.jvnet.substance.skin.BusinessBlackSteelSkin");
-        //SubstanceLookAndFeel.setCurrentTheme("org.jvnet.substance.theme.SubstanceAquaTheme");
+        SubstanceLookAndFeel.setCurrentTheme("org.jvnet.substance.theme.SubstanceAquaTheme");
         SubstanceLookAndFeel.setCurrentWatermark("org.jvnet.substance.watermark.SubstanceLatchWatermark");
         initComponents();
         this.setTitle("CHESS ORACLE");
@@ -39,22 +50,70 @@ public class Principal extends javax.swing.JFrame {
                 principal_board[i][j] = new Empty(0);
             }
         }
-        matriz_label[0][0]=Label00;matriz_label[0][1]=Label01;matriz_label[0][2]=Label02;matriz_label[0][3]=Label03;
-        matriz_label[0][4]=Label04;matriz_label[0][5]=Label05;matriz_label[0][6]=Label06;matriz_label[0][7]=Label07;
-        matriz_label[1][0]=Label10;matriz_label[1][1]=Label11;matriz_label[1][2]=Label12;matriz_label[1][3]=Label13;
-        matriz_label[1][4]=Label14;matriz_label[1][5]=Label15;matriz_label[1][6]=Label16;matriz_label[1][7]=Label17;
-        matriz_label[2][0]=Label20;matriz_label[2][1]=Label21;matriz_label[2][2]=Label22;matriz_label[2][3]=Label23;
-        matriz_label[2][4]=Label24;matriz_label[2][5]=Label25;matriz_label[2][6]=Label26;matriz_label[2][7]=Label27;
-        matriz_label[3][0]=Label30;matriz_label[3][1]=Label31;matriz_label[3][2]=Label32;matriz_label[3][3]=Label33;
-        matriz_label[3][4]=Label34;matriz_label[3][5]=Label35;matriz_label[3][6]=Label36;matriz_label[3][7]=Label37;
-        matriz_label[4][0]=Label40;matriz_label[4][1]=Label41;matriz_label[4][2]=Label42;matriz_label[4][3]=Label43;
-        matriz_label[4][4]=Label44;matriz_label[4][5]=Label45;matriz_label[4][6]=Label46;matriz_label[4][7]=Label47;
-        matriz_label[5][0]=Label50;matriz_label[5][1]=Label51;matriz_label[5][2]=Label52;matriz_label[5][3]=Label53;
-        matriz_label[5][4]=Label54;matriz_label[5][5]=Label55;matriz_label[5][6]=Label56;matriz_label[5][7]=Label57;
-        matriz_label[6][0]=Label60;matriz_label[6][1]=Label61;matriz_label[6][2]=Label62;matriz_label[6][3]=Label63;
-        matriz_label[6][4]=Label64;matriz_label[6][5]=Label65;matriz_label[6][6]=Label66;matriz_label[6][7]=Label67;
-        matriz_label[7][0]=Label70;matriz_label[7][1]=Label71;matriz_label[7][2]=Label72;matriz_label[7][3]=Label73;
-        matriz_label[7][4]=Label74;matriz_label[7][5]=Label75;matriz_label[7][6]=Label76;matriz_label[7][7]=Label77;
+        matriz_label[0][0] = Label00;
+        matriz_label[0][1] = Label01;
+        matriz_label[0][2] = Label02;
+        matriz_label[0][3] = Label03;
+        matriz_label[0][4] = Label04;
+        matriz_label[0][5] = Label05;
+        matriz_label[0][6] = Label06;
+        matriz_label[0][7] = Label07;
+        matriz_label[1][0] = Label10;
+        matriz_label[1][1] = Label11;
+        matriz_label[1][2] = Label12;
+        matriz_label[1][3] = Label13;
+        matriz_label[1][4] = Label14;
+        matriz_label[1][5] = Label15;
+        matriz_label[1][6] = Label16;
+        matriz_label[1][7] = Label17;
+        matriz_label[2][0] = Label20;
+        matriz_label[2][1] = Label21;
+        matriz_label[2][2] = Label22;
+        matriz_label[2][3] = Label23;
+        matriz_label[2][4] = Label24;
+        matriz_label[2][5] = Label25;
+        matriz_label[2][6] = Label26;
+        matriz_label[2][7] = Label27;
+        matriz_label[3][0] = Label30;
+        matriz_label[3][1] = Label31;
+        matriz_label[3][2] = Label32;
+        matriz_label[3][3] = Label33;
+        matriz_label[3][4] = Label34;
+        matriz_label[3][5] = Label35;
+        matriz_label[3][6] = Label36;
+        matriz_label[3][7] = Label37;
+        matriz_label[4][0] = Label40;
+        matriz_label[4][1] = Label41;
+        matriz_label[4][2] = Label42;
+        matriz_label[4][3] = Label43;
+        matriz_label[4][4] = Label44;
+        matriz_label[4][5] = Label45;
+        matriz_label[4][6] = Label46;
+        matriz_label[4][7] = Label47;
+        matriz_label[5][0] = Label50;
+        matriz_label[5][1] = Label51;
+        matriz_label[5][2] = Label52;
+        matriz_label[5][3] = Label53;
+        matriz_label[5][4] = Label54;
+        matriz_label[5][5] = Label55;
+        matriz_label[5][6] = Label56;
+        matriz_label[5][7] = Label57;
+        matriz_label[6][0] = Label60;
+        matriz_label[6][1] = Label61;
+        matriz_label[6][2] = Label62;
+        matriz_label[6][3] = Label63;
+        matriz_label[6][4] = Label64;
+        matriz_label[6][5] = Label65;
+        matriz_label[6][6] = Label66;
+        matriz_label[6][7] = Label67;
+        matriz_label[7][0] = Label70;
+        matriz_label[7][1] = Label71;
+        matriz_label[7][2] = Label72;
+        matriz_label[7][3] = Label73;
+        matriz_label[7][4] = Label74;
+        matriz_label[7][5] = Label75;
+        matriz_label[7][6] = Label76;
+        matriz_label[7][7] = Label77;
     }
 
     /**
@@ -304,7 +363,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel5.setText("4");
 
         jLabel6.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel6.setText("A");
+        jLabel6.setText("0");
 
         jLabel7.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
         jLabel7.setText("6");
@@ -316,25 +375,25 @@ public class Principal extends javax.swing.JFrame {
         jLabel9.setText("7");
 
         jLabel10.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel10.setText("B");
+        jLabel10.setText("1");
 
         jLabel11.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel11.setText("C");
+        jLabel11.setText("2");
 
         jLabel12.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel12.setText("D");
+        jLabel12.setText("3");
 
         jLabel13.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel13.setText("E");
+        jLabel13.setText("4");
 
         jLabel14.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel14.setText("F");
+        jLabel14.setText("5");
 
         jLabel15.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel15.setText("G");
+        jLabel15.setText("6");
 
         jLabel16.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
-        jLabel16.setText("H");
+        jLabel16.setText("7");
 
         jLabel17.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
         jLabel17.setText("Chess Oracle");
@@ -372,6 +431,11 @@ public class Principal extends javax.swing.JFrame {
         });
 
         jButton2.setText("successions");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -548,20 +612,21 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(88, 88, 88)
                         .addComponent(jLabel6)
-                        .addGap(55, 55, 55)
+                        .addGap(61, 61, 61)
                         .addComponent(jLabel10)
-                        .addGap(59, 59, 59)
+                        .addGap(62, 62, 62)
                         .addComponent(jLabel11)
-                        .addGap(51, 51, 51)
+                        .addGap(56, 56, 56)
                         .addComponent(jLabel12)
-                        .addGap(57, 57, 57)
+                        .addGap(62, 62, 62)
                         .addComponent(jLabel13)
-                        .addGap(58, 58, 58)
+                        .addGap(67, 67, 67)
                         .addComponent(jLabel14)
-                        .addGap(60, 60, 60)
+                        .addGap(61, 61, 61)
                         .addComponent(jLabel15)
-                        .addGap(53, 53, 53)
-                        .addComponent(jLabel16)))
+                        .addGap(54, 54, 54)
+                        .addComponent(jLabel16)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(159, 159, 159))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -576,9 +641,9 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addContainerGap(54, Short.MAX_VALUE)
+                                .addContainerGap(57, Short.MAX_VALUE)
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -682,17 +747,14 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(jButton1)
                         .addGap(8, 8, 8)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Label50, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label51, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label52, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label53, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label54, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label55, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label56, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Label57, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(Label50, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label51, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label52, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label53, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label54, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label55, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label56, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Label57, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jLabel8)))
@@ -735,8 +797,9 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel12)
                     .addComponent(jLabel13)
                     .addComponent(jLabel14)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel15))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel16)
+                        .addComponent(jLabel15)))
                 .addGap(32, 32, 32))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -759,7 +822,7 @@ public class Principal extends javax.swing.JFrame {
         String color = (String) cbColor.getSelectedItem();
         String a = "Label" + i + j;
         for (int k = 0; k < 10; k++) {
-            for (int l = 0; l < 10; l++) {                
+            for (int l = 0; l < 10; l++) {
                 if (i == k && j == l) {
                     if ("King".equals(kind)) {
                         if ("Black".equals(color)) {
@@ -767,32 +830,32 @@ public class Principal extends javax.swing.JFrame {
                                 String path = "/images/KingN1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new King(2);
-                            }else{
+                                principal_board[i][j] = new King(2);
+                            } else {
                                 String path = "/images/KingN2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new King(2);
+                                principal_board[i][j] = new King(2);
                             }
                         } else {
                             if ((i + j) % 2 == 0) {
                                 String path = "/images/KingB1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new King(1);
-                            }else{
+                                principal_board[i][j] = new King(1);
+                            } else {
                                 String path = "/images/KingB2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new King(1);
+                                principal_board[i][j] = new King(1);
                             }
                         }
                     } else if ("Queen".equals(kind)) {
@@ -801,32 +864,32 @@ public class Principal extends javax.swing.JFrame {
                                 String path = "/images/QueenN1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Queen(2);
-                            }else{
+                                principal_board[i][j] = new Queen(2);
+                            } else {
                                 String path = "/images/QueenN2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Queen(2);
+                                principal_board[i][j] = new Queen(2);
                             }
                         } else {
                             if ((i + j) % 2 == 0) {
                                 String path = "/images/QueenB1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Queen(1);
-                            }else{
+                                principal_board[i][j] = new Queen(1);
+                            } else {
                                 String path = "/images/QueenB2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Queen(1);
+                                principal_board[i][j] = new Queen(1);
                             }
                         }
                     } else if ("Knight".equals(kind)) {
@@ -835,90 +898,118 @@ public class Principal extends javax.swing.JFrame {
                                 String path = "/images/KnightN1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Knight(2);
-                            }else{
+                                principal_board[i][j] = new Knight(2);
+                            } else {
                                 String path = "/images/KnightN2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Knight(2);
+                                principal_board[i][j] = new Knight(2);
                             }
                         } else {
                             if ((i + j) % 2 == 0) {
                                 String path = "/images/KnightB1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Knight(1);
-                            }else{
+                                principal_board[i][j] = new Knight(1);
+                            } else {
                                 String path = "/images/KnightB2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Knight(1);
+                                principal_board[i][j] = new Knight(1);
                             }
                         }
-                    } else if("Pawn".equals(kind)){
+                    } else if ("Pawn".equals(kind)) {
                         if ("Black".equals(color)) {
                             if ((i + j) % 2 == 0) {
                                 String path = "/images/PawnN1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Pawn(2);
-                            }else{
+                                principal_board[i][j] = new Pawn(2);
+                            } else {
                                 String path = "/images/PawnN2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Pawn(2);
+                                principal_board[i][j] = new Pawn(2);
                             }
                         } else {
                             if ((i + j) % 2 == 0) {
                                 String path = "/images/PawnB1.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Pawn(1);
-                            }else{
+                                principal_board[i][j] = new Pawn(1);
+                            } else {
                                 String path = "/images/PawnB2.png";
                                 URL url = this.getClass().getResource(path);
                                 ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
+                                JLabel temp = matriz_label[i][j];
                                 temp.setIcon(icon);
-                                principal_board[i][j]=new Pawn(1);
+                                principal_board[i][j] = new Pawn(1);
                             }
                         }
-                    }else{
-                       if ((i + j) % 2 == 0) {
-                                String path = "/images/Background1.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j]=new Empty(0);
-                            }else{
-                                String path = "/images/Background2.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp=matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j]=new Empty(0);
-                            }
+                    } else {
+                        if ((i + j) % 2 == 0) {
+                            String path = "/images/Background1.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Empty(0);
+                        } else {
+                            String path = "/images/Background2.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Empty(0);
+                        }
                     }
                 }
             }
         }
-        
+
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(principal_board[i][j] + " ");
+            }
+            System.out.println("");
+        }
+        if (validBoard(principal_board)) {
+            if (validpositionKing(principal_board)) {
+                if (validTabla(principal_board)) {
+                    //////////////////////////////////
+                    Movement principal = new Movement(new Empty(0), "0,0", "0,0");
+                    Tree root = new Tree(new Mapping(principal_board, principal));
+                    mapping(root.getRoot(), 0);
+                    System.out.println(lista_peon.getSize());
+                    //////////////////////////////////
+                } else {
+                    JOptionPane.showMessageDialog(this, "Tie! Not enough pieces to win on either side");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Kings cannot be in adjacent places");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect placement");
+        }
+    }//GEN-LAST:event_jButton2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -1048,4 +1139,290 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     // End of variables declaration//GEN-END:variables
+
+    public boolean validBoard(Piece[][] board) {
+        int contK1 = 0;
+        int contK2 = 0;
+        int contQ1 = 0;
+        int contQ2 = 0;
+        int contC1 = 0;
+        int contC2 = 0;
+        int contP1 = 0;
+        int contP2 = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof King) {
+                    if (board[i][j].getPlayer() == 1) {
+                        contK1++;
+                    } else {
+                        contK2++;
+                    }
+                } else if (board[i][j] instanceof Queen) {
+                    if (board[i][j].getPlayer() == 1) {
+                        contQ1++;
+                    } else {
+                        contQ2++;
+                    }
+                } else if (board[i][j] instanceof Knight) {
+                    if (board[i][j].getPlayer() == 1) {
+                        contC1++;
+                    } else {
+                        contC2++;
+                    }
+                } else if (board[i][j] instanceof Pawn) {
+                    if (board[i][j].getPlayer() == 1) {
+                        contP1++;
+                    } else {
+                        contP2++;
+                    }
+                }
+            }
+        }
+        return contK1 == 1 && contK2 == 1 && contQ1 < 2 && contQ2 < 2 && contC1 < 3 && contC2 < 3 && contP1 < 9 && contP2 < 9;
+    }
+
+    public boolean validpositionKing(Piece[][] board) {
+        int i1 = 0, j1 = 0, i2 = 0, j2 = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof King) {
+                    if (board[i][j].getPlayer() == 1) {
+                        i1 = i;
+                        j1 = j;
+                    } else {
+                        i2 = i;
+                        j2 = j;
+                    }
+                }
+            }
+        }
+        return !((j1 == j2 && abs(i1 - i2) == 1) || (i1 == i2 && abs(j1 - j2) == 1));
+    }
+
+    public boolean validTabla(Piece[][] board) {
+        int cont = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof Empty) {
+                } else {
+                    cont++;
+                }
+            }
+        }
+        if (cont == 2) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static Piece[][] copy_board(Piece[][] board) {
+        Piece[][] temporal = new Piece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                temporal[i][j] = board[i][j];
+            }
+        }
+        return temporal;
+    }
+
+    public static void mapping(TreeNode currentNode, int cont) {
+        traverse_tree(currentNode, cont);
+        if (currentNode.getParent() != null) {
+            if (currentNode.getRigthBrother() != null) {
+                mapping(currentNode.getRigthBrother(), cont);
+            } else if (currentNode.getParent().getLeftSon().getChildAt(0) != null) {
+                mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1);
+            } else if (currentNode.getParent() != null) {
+                if (currentNode.getParent().getRigthBrother() != null) {
+                    if (currentNode.getParent().getRigthBrother().getLeftSon() != null) {
+                        mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1);
+                    }
+                }
+            }
+        } else {
+            mapping(currentNode.getLeftSon(), cont + 1);
+        }
+    }
+
+    public static void traverse_tree(TreeNode currentNode, int cont) {
+        if (currentNode.getDepth() < 25) {
+            int player, enemy;
+            if (cont % 2 == 0) {
+                player = 1;
+                enemy = 2;
+            } else {
+                player = 2;
+                enemy = 1;
+            }
+            System.out.println("EL jugador es: " + player);
+            System.out.println("");
+            Mapping temp = (Mapping) currentNode.getValue();
+            Piece[][] father_board = temp.getBoard();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    for (int k = 0; k < 8; k++) {
+                        for (int l = 0; l < 8; l++) {
+                            if (father_board[i][j].getPlayer() == player) {
+                                if (father_board[i][j].validation(father_board, i, j, k, l)) {
+                                    Piece[][] board = copy_board(father_board);
+                                    if (board[i][j].getPlayer() == 1 && (board[k][l].getPlayer() == 2 || board[k][l].getPlayer() == 0)) {
+                                        int x1, y1, x2, y2;
+                                        if (cont == 0) {
+                                            x1 = i;
+                                            y1 = j;
+                                            x2 = k;
+                                            y2 = l;
+                                        } else {
+                                            Mapping father = (Mapping) currentNode.getParent().getValue();
+                                            Movement previous = father.getLast();
+                                            String coo1 = previous.getCoor1();
+                                            String coo2 = previous.getCoor2();
+                                            String[] split1 = coo1.split(",");
+                                            String[] split2 = coo2.split(",");
+                                            x1 = Integer.parseInt(split1[0]);
+                                            y1 = Integer.parseInt(split1[1]);
+                                            x2 = Integer.parseInt(split2[0]);
+                                            y2 = Integer.parseInt(split2[1]);
+                                        }
+                                        if (x1 == k && y1 == l && x2 == i && y2 == j) {
+                                        } else if (board[k][l] instanceof King) {
+                                        } else {
+                                            board[k][l] = board[i][j];
+                                            board[i][j] = new Empty(0);
+                                            String coor1 = i + "," + j;
+                                            String coor2 = k + "," + l;
+                                            Movement last = new Movement(board[k][l], coor1, coor2);
+                                            for (int a = 0; a < 8; a++) {
+                                                for (int b = 0; b < 8; b++) {
+                                                    System.out.print(board[a][b] + " ");
+                                                }
+                                                System.out.println("");
+                                            }
+                                            Mapping map = new Mapping(board, last);
+                                            if (board[k][l] instanceof Pawn) {
+                                                if (k == 0) {
+                                                    lista_peon.push_back(map);
+                                                }
+                                            }
+
+                                            if (isCheck(board, enemy)) {
+                                                check.push_back(map);
+                                            }
+
+                                            if (wasEatKhigth(father_board, board)) {
+                                                knight.push_back(map);
+                                            }
+
+                                            if (wasEatQueen(father_board, board)) {
+                                                queen.push_back(map);
+                                            }
+                                            System.out.println("");
+                                            currentNode.addSon(map);
+                                        }
+                                    } else if (board[i][j].getPlayer() == 2 && (board[k][l].getPlayer() == 1 || board[k][l].getPlayer() == 0)) {
+                                        int x1, y1, x2, y2;
+                                        if (cont == 0) {
+                                            x1 = i;
+                                            y1 = j;
+                                            x2 = k;
+                                            y2 = l;
+                                        } else {
+                                            Mapping father = (Mapping) currentNode.getParent().getValue();
+                                            Movement previous = father.getLast();
+                                            String coo1 = previous.getCoor1();
+                                            String coo2 = previous.getCoor2();
+                                            String[] split1 = coo1.split(",");
+                                            String[] split2 = coo2.split(",");
+                                            x1 = Integer.parseInt(split1[0]);
+                                            y1 = Integer.parseInt(split1[1]);
+                                            x2 = Integer.parseInt(split2[0]);
+                                            y2 = Integer.parseInt(split2[1]);
+                                        }
+                                        if (x1 == k && y1 == l && x2 == i && y2 == j) {
+                                        } else if (board[k][l] instanceof King) {
+                                        } else {
+                                            board[k][l] = board[i][j];
+                                            board[i][j] = new Empty(0);
+                                            String coor1 = i + "," + j;
+                                            String coor2 = k + "," + l;
+                                            Movement last = new Movement(board[k][l], coor1, coor2);
+                                            Mapping map = new Mapping(board, last);
+                                            if (isCheck(board, enemy)) {
+                                                check.push_back(map);
+                                            }
+                                            currentNode.addSon(map);
+                                            for (int a = 0; a < 8; a++) {
+                                                for (int b = 0; b < 8; b++) {
+                                                    System.out.print(board[a][b] + " ");
+                                                }
+                                                System.out.println("");
+                                            }
+                                            System.out.println("");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static boolean wasEatKhigth(Piece[][] board, Piece[][] board2) {
+        int horse1 = 0;
+        int horse2 = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof Knight && board[i][j].getPlayer() == 2) {
+                    horse1++;
+                }
+                if (board2[i][j] instanceof Knight && board2[i][j].getPlayer() == 2) {
+                    horse2++;
+                }
+            }
+        }
+        return horse1 == horse2;
+    }
+
+    public static boolean wasEatQueen(Piece[][] board, Piece[][] board2) {
+        int queen1 = 0;
+        int queen2 = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] instanceof Queen && board[i][j].getPlayer() == 2) {
+                    queen1++;
+                }
+                if (board2[i][j] instanceof Queen && board2[i][j].getPlayer() == 2) {
+                    queen2++;
+                }
+            }
+        }
+        return queen1 == queen2;
+    }
+
+    public static boolean isCheck(Piece[][] board, int player) {
+        String placeToKing = placeToKing(board, player);
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                String tempPosition = "" + i + "," + j;
+                if (isValidMove(board, tempPosition, placeToKing)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static String placeToKing(Piece[][] board, int player) {
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                if (board[i][j] instanceof King && board[i][j].getPlayer() == player) {
+                    return "" + i + "," + j;
+                }
+            }
+        }
+        return "";
+    }
 }

@@ -74,7 +74,7 @@ public class main {
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont) {
-        if (currentNode.getDepth() < 25) {
+        if (currentNode.getDepth() <25) {
             int player, enemy;
             if (cont % 2 == 0) {
                 player = 1;
