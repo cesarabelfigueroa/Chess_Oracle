@@ -33,13 +33,18 @@ public class main {
             }
         }
         principal_board[1][3] = new King(2);
-        principal_board[1][6] = new Pawn(2);
-        principal_board[3][3] = new Pawn(1);
+        //principal_board[1][6] = new Pawn(2);
         principal_board[3][5] = new Pawn(1);
+        //principal_board[3][5] = new Pawn(1);
         principal_board[4][4] = new King(1);
         Movement principal = new Movement(new Empty(0), "0,0", "0,0");
         Tree root = new Tree(new Mapping(principal_board, principal));
-
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(principal_board[i][j]+" ");
+            }
+            System.out.println("");
+        }
         mapping(root.getRoot(), 0);
         System.out.println(lista_peon.getSize());
     }
@@ -72,6 +77,8 @@ public class main {
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont) {
+        System.err.println(currentNode.getDepth()+"La altura !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.err.println(((Mapping)currentNode.getValue()).getLast().toString());
         if (currentNode.getDepth() <25) {
             int player, enemy;
             if (cont % 2 == 0) {
@@ -119,15 +126,11 @@ public class main {
                                             String coor1 = i + "," + j;
                                             String coor2 = k + "," + l;
                                             Movement last = new Movement(board[k][l], coor1, coor2);
-                                            for (int a = 0; a < 8; a++) {
-                                                for (int b = 0; b < 8; b++) {
-                                                    System.out.print(board[a][b] + " ");
-                                                }
-                                                System.out.println("");
-                                            }
                                             Mapping map = new Mapping(board, last);
                                             if (board[k][l] instanceof Pawn) {
-                                                if (k == 0) {
+                                                System.out.println(map.toString());
+                                                if ((k==0)) {
+                                                    System.err.println("ENTROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                                                     lista_peon.push_back(map);
                                                 }
                                             }
@@ -142,6 +145,12 @@ public class main {
 
                                             if (wasEatQueen(father_board, board)) {
                                                 queen.push_back(map);
+                                            }
+                                            for (int a = 0; a < 8; a++) {
+                                                for (int b = 0; b < 8; b++) {
+                                                    System.out.print(board[a][b] + " ");
+                                                }
+                                                System.out.println("");
                                             }
                                             System.out.println("");
                                             currentNode.addSon(map);
@@ -174,11 +183,13 @@ public class main {
                                             String coor2 = k + "," + l;
                                             Movement last = new Movement(board[k][l], coor1, coor2);
                                             Mapping map = new Mapping(board, last);
-                                            if (board[k][l] instanceof Pawn) {
+                                            /*if (board[k][l] instanceof Pawn) {
                                                 if (k == 6) {
                                                     lista_peon.push_back(map);
+                                                    System.err.println("ENTROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                                                    System.out.println(map.toString());
                                                 }
-                                            }
+                                            }*/
 
                                             if (isCheck(board, enemy)) {
                                                 check.push_back(map);
