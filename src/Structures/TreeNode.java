@@ -11,6 +11,9 @@ public class TreeNode {
     public TreeNode(Object value, TreeNode parent) {
         this.value = value;
         this.parent = parent;
+        if (parent != null) {
+            this.depth = parent.getDepth() + 1;
+        }
     }
 
     public TreeNode(Object value, TreeNode parent, int depth) {
@@ -73,7 +76,7 @@ public class TreeNode {
     }
 
     public TreeNode getLeftBrother() {
-       if (parent != null) {
+        if (parent != null) {
             int index = parent.getChildrens().find(this) - 1;
             if (index < parent.getChildrens().getSize()) {
                 return (TreeNode) parent.getChildrens().at(index);
@@ -122,10 +125,10 @@ public class TreeNode {
 
         return branches;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return value.toString();
-    
+
     }
 }

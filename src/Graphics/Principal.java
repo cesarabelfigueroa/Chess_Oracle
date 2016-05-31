@@ -1,11 +1,12 @@
+package Graphics;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Structures;
-
 import Resources.Empty;
+import Structures.*;
 import Resources.King;
 import Resources.Knight;
 import Resources.Mapping;
@@ -13,8 +14,6 @@ import Resources.Movement;
 import Resources.Pawn;
 import Resources.Piece;
 import Resources.Queen;
-import static Structures.main.isValidMove;
-import static Structures.main.mapping;
 import java.awt.Color;
 import java.awt.Component;
 import static java.lang.Math.abs;
@@ -1113,12 +1112,6 @@ public class Principal extends javax.swing.JFrame {
         textArea.setText("");
         if (elements.getSize() > 0) {
             TreeNode router = (TreeNode) elements.at(0);
-            for (int i = 0; i < elements.getSize(); i++) {
-                if (((TreeNode) elements.at(i)).getDepth() < router.getDepth()) {
-                    router = (TreeNode) elements.at(i);
-                }
-            }
-
             LinkedList tree = router.getBranches();
             for (int i = router.getBranches().getSize() - 1; i >= 0; i--) {
                 textArea.setText(textArea.getText() + router.getBranches().at(i) + "\n");
@@ -1379,33 +1372,22 @@ public class Principal extends javax.swing.JFrame {
     }
 
     public static void mapping(TreeNode currentNode, int cont) {
-        traverse_tree(currentNode, cont);
-        if (currentNode.getParent() != null) {
-            if (currentNode.getRigthBrother() != null) {
-                mapping(currentNode.getRigthBrother(), cont + 1); //se mueve entre hermanos, al no tener.
-            } else if (currentNode.getParent().getRigthBrother() != null) {
-                if (currentNode.getParent().getRigthBrother().getLeftSon() != null) {
-                    mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1); // busca el primo, el primer hijo, del padre siguiente.
-                }
-            } else {  //ya no tiene ni primos ni hermanos, es el ultimo del nivel.
-                int deepth = currentNode.getDepth();
-                for (int i = 0; i < deepth; i++) {
-                    currentNode = currentNode.getParent(); // al llegar al nodo final del nivel, sube hasta la raiz n profundidad.
-                }
-                for (int i = 0; i < deepth; i++) {
-                    currentNode = currentNode.getChildAt(0); // baja hasta el primer elemento de ese mismo nivel.
-                }
-                if (currentNode.getLeftSon() != null) {
-                    mapping(currentNode.getLeftSon(), cont + 1); // y aumenta en un nivel para volver a generar el siguiente
+        Queue map = new Queue();
+        map.queue(currentNode);
+        while (!map.isEmpty() && ((TreeNode) map.peek()).getDepth() < 5) {
+            TreeNode node = (TreeNode) map.dequeue();
+            traverse_tree(node, node.getDepth());
+            if (node.getChildCount() > 0) {
+                for (int i = 0; i < node.getChildCount(); i++) {
+                    TreeNode child = (TreeNode) node.getChildAt(i);
+                    map.queue(child);
                 }
             }
-        } else {
-            mapping(currentNode.getLeftSon(), cont + 1);
         }
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont) {
-        System.out.println(currentNode.getDepth() + " ======================");
+        System.out.println("================== Nivel " + currentNode.getDepth() + " ======================== ");
         if (currentNode.getDepth() < 25) {
             int player, enemy;
             if (cont % 2 == 0) {
@@ -1415,7 +1397,7 @@ public class Principal extends javax.swing.JFrame {
                 player = 2;
                 enemy = 1;
             }
-            System.out.println("EL jugador es: " + player);
+            System.out.println("El movimiento que se está procesando es : " + currentNode.toString());
             System.out.println("");
             Mapping temp = (Mapping) currentNode.getValue();
             Piece[][] father_board = temp.getBoard();
@@ -1466,19 +1448,20 @@ public class Principal extends javax.swing.JFrame {
                                                 }
                                             }
 
+                                            System.out.println("");
+                                            TreeNode element = new TreeNode(map, currentNode);
+                                            currentNode.addSon(element);
                                             if (isCheck(board, enemy)) {
-                                                check.push_back(currentNode);
+                                                check.push_back(element);
                                             }
 
                                             if (wasEatKhigth(father_board, board)) {
-                                                knight.push_back(currentNode);
+                                                knight.push_back(element);
                                             }
 
                                             if (wasEatQueen(father_board, board)) {
-                                                queen.push_back(currentNode);
+                                                queen.push_back(element);
                                             }
-                                            System.out.println("");
-                                            currentNode.addSon(map);
                                         }
                                     } else if (board[i][j].getPlayer() == 2 && (board[k][l].getPlayer() == 1 || board[k][l].getPlayer() == 0)) {
                                         int x1, y1, x2, y2;
@@ -1508,10 +1491,10 @@ public class Principal extends javax.swing.JFrame {
                                             String coor2 = k + "," + l;
                                             Movement last = new Movement(board[k][l], coor1, coor2);
                                             Mapping map = new Mapping(board, last);
-                                            if (isCheck(board, enemy)) {
-                                                check.push_back(currentNode);
-                                            }
-                                            currentNode.addSon(map);
+
+                                            TreeNode element = new TreeNode(map, currentNode);
+                                            currentNode.addSon(element);
+
                                             for (int a = 0; a < 8; a++) {
                                                 for (int b = 0; b < 8; b++) {
                                                     System.out.print(board[a][b] + " ");
@@ -1586,4 +1569,164 @@ public class Principal extends javax.swing.JFrame {
         }
         return "";
     }
+
+    public static boolean isValidMove(Piece[][] board, String initial, String end) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        if (endX < 0 || endX > 7 || endY < 0 || endY > 7 || initialX < 0 || initialX > 7 || initialY < 0 || initialY > 7) {
+            return false;
+        } else {
+            boolean isEmpty = isEmpty(board, initial);
+            boolean isValidDestiny = isValidDestiny(board, initial, end);
+            boolean isValidMove = board[initialX][initialY].validation(board, initialX, initialY, endX, endY);
+            boolean isHungryPeon = isHungryPeon(board, initial, end);
+            return !isEmpty && isValidDestiny && (isValidMove || isHungryPeon);
+        }
+    }
+
+    public static boolean isValidDestiny(Piece[][] board, String initial, String end) {
+        return !isSameColor(board, initial, end) && !isSomethingInMiddle(board, initial, end);
+    }
+
+    public static boolean isSomethingInMiddle(Piece[][] board, String initial, String end) {
+        int initX = Integer.parseInt(initial.split(",")[0]);
+        int initY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        Piece attacker = board[initX][initY];
+        Piece attacked = board[endX][endY];
+        if (attacker instanceof Pawn) {
+            return (!(attacked instanceof Empty)) && !isHungryPeon(board, initial, end);
+        } else if (attacker instanceof Knight) {
+            return false;
+        } else if (attacker instanceof King) {
+            return false;
+        } else if (board[initX][initY] instanceof Queen) {
+            if (initX + initY == endX + endY) {
+                if (endX < initX && endY > initY) {
+                    int referencesY = endY - 1;
+                    for (int i = endX + 1; i < initX; ++i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY--;
+                    }
+                    return false;
+                } else if (endX > initX && endY < initY) {
+                    int referencesY = endY + 1;
+                    for (int i = endX - 1; i > initX; --i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY++;
+                    }
+                    return false;
+                }
+            } else if (initX - initY == endX - endY) {
+                if (endX < initX && endY < initY) {
+                    int referencesY = endY + 1;
+                    for (int i = endX + 1; i < initX; ++i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY++;
+                    }
+                    return false;
+                } else if (endX > initX && endY > initY) {
+                    int referencesY = endY - 1;
+                    for (int i = endX - 1; i > initX; --i) {
+                        if (!(board[i][referencesY] instanceof Empty)) {
+                            return true;
+                        }
+                        referencesY--;
+                    }
+                    return false;
+                }
+            }
+            if (endY > initY) { // se mueve a la derecha.
+                for (int i = endY - 1; i > initY; --i) {
+                    if (!(board[initX][i] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else if (initY > endY) { // se mueve a la izquierda.
+                for (int i = endY + 1; i < initY; ++i) {
+                    if (!(board[initX][i] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else if (endX > initX) { // se mueve a abajo.
+                for (int i = endX - 1; i > initX; --i) {
+                    if (!(board[i][initY] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else if (initX > endX) { // se mueve a la arriba.
+                for (int i = endX + 1; i < initX; ++i) {
+                    if (!(board[i][initY] instanceof Empty)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isSameColor(Piece[][] board, String initial, String end) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        return board[endX][endY].getPlayer() == board[initialX][initialY].getPlayer();
+    }
+
+    public static boolean isHungryPeon(Piece[][] board, String initial, String end) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        int endX = Integer.parseInt(end.split(",")[0]);
+        int endY = Integer.parseInt(end.split(",")[1]);
+        Piece attacker = board[initialX][initialY];
+        Piece attacked = board[endX][endY];
+        if (attacker instanceof Pawn) {
+            if (!(attacked instanceof Empty)) {
+                if (attacker.getPlayer() == 1) {
+                    if (endX == initialX - 1 && endY == initialY + 1) {
+                        return true;
+                    } else if (endX == initialX - 1 && endY == initialY - 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (attacker.getPlayer() == 2) {
+                    if (endX == initialX + 1 && endY == initialY + 1) {
+                        return true;
+                    } else if (endX == initialX + 1 && endY == initialY - 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isEmpty(Piece[][] board, String initial) {
+        int initialX = Integer.parseInt(initial.split(",")[0]);
+        int initialY = Integer.parseInt(initial.split(",")[1]);
+        return board[initialX][initialY] instanceof Empty;
+    }
+
 }
