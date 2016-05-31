@@ -16,6 +16,7 @@ import Resources.Queen;
 import static Structures.main.isValidMove;
 import static Structures.main.mapping;
 import java.awt.Color;
+import java.awt.Component;
 import static java.lang.Math.abs;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -237,6 +238,9 @@ public class Principal extends javax.swing.JFrame {
         jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton4MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jButton4MouseEntered(evt);
             }
         });
 
@@ -936,22 +940,20 @@ public class Principal extends javax.swing.JFrame {
                                 temp.setIcon(icon);
                                 principal_board[i][j] = new King(2);
                             }
+                        } else if ((i + j) % 2 == 0) {
+                            String path = "/images/KingB1.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new King(1);
                         } else {
-                            if ((i + j) % 2 == 0) {
-                                String path = "/images/KingB1.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new King(1);
-                            } else {
-                                String path = "/images/KingB2.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new King(1);
-                            }
+                            String path = "/images/KingB2.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new King(1);
                         }
                     } else if ("Queen".equals(kind)) {
                         if ("Black".equals(color)) {
@@ -970,22 +972,20 @@ public class Principal extends javax.swing.JFrame {
                                 temp.setIcon(icon);
                                 principal_board[i][j] = new Queen(2);
                             }
+                        } else if ((i + j) % 2 == 0) {
+                            String path = "/images/QueenB1.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Queen(1);
                         } else {
-                            if ((i + j) % 2 == 0) {
-                                String path = "/images/QueenB1.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new Queen(1);
-                            } else {
-                                String path = "/images/QueenB2.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new Queen(1);
-                            }
+                            String path = "/images/QueenB2.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Queen(1);
                         }
                     } else if ("Knight".equals(kind)) {
                         if ("Black".equals(color)) {
@@ -1004,22 +1004,20 @@ public class Principal extends javax.swing.JFrame {
                                 temp.setIcon(icon);
                                 principal_board[i][j] = new Knight(2);
                             }
+                        } else if ((i + j) % 2 == 0) {
+                            String path = "/images/KnightB1.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Knight(1);
                         } else {
-                            if ((i + j) % 2 == 0) {
-                                String path = "/images/KnightB1.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new Knight(1);
-                            } else {
-                                String path = "/images/KnightB2.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new Knight(1);
-                            }
+                            String path = "/images/KnightB2.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Knight(1);
                         }
                     } else if ("Pawn".equals(kind)) {
                         if ("Black".equals(color)) {
@@ -1038,39 +1036,35 @@ public class Principal extends javax.swing.JFrame {
                                 temp.setIcon(icon);
                                 principal_board[i][j] = new Pawn(2);
                             }
+                        } else if ((i + j) % 2 == 0) {
+                            String path = "/images/PawnB1.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Pawn(1);
                         } else {
-                            if ((i + j) % 2 == 0) {
-                                String path = "/images/PawnB1.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new Pawn(1);
-                            } else {
-                                String path = "/images/PawnB2.png";
-                                URL url = this.getClass().getResource(path);
-                                ImageIcon icon = new ImageIcon(url);
-                                JLabel temp = matriz_label[i][j];
-                                temp.setIcon(icon);
-                                principal_board[i][j] = new Pawn(1);
-                            }
+                            String path = "/images/PawnB2.png";
+                            URL url = this.getClass().getResource(path);
+                            ImageIcon icon = new ImageIcon(url);
+                            JLabel temp = matriz_label[i][j];
+                            temp.setIcon(icon);
+                            principal_board[i][j] = new Pawn(1);
                         }
+                    } else if ((i + j) % 2 == 0) {
+                        String path = "/images/Background1.png";
+                        URL url = this.getClass().getResource(path);
+                        ImageIcon icon = new ImageIcon(url);
+                        JLabel temp = matriz_label[i][j];
+                        temp.setIcon(icon);
+                        principal_board[i][j] = new Empty(0);
                     } else {
-                        if ((i + j) % 2 == 0) {
-                            String path = "/images/Background1.png";
-                            URL url = this.getClass().getResource(path);
-                            ImageIcon icon = new ImageIcon(url);
-                            JLabel temp = matriz_label[i][j];
-                            temp.setIcon(icon);
-                            principal_board[i][j] = new Empty(0);
-                        } else {
-                            String path = "/images/Background2.png";
-                            URL url = this.getClass().getResource(path);
-                            ImageIcon icon = new ImageIcon(url);
-                            JLabel temp = matriz_label[i][j];
-                            temp.setIcon(icon);
-                            principal_board[i][j] = new Empty(0);
-                        }
+                        String path = "/images/Background2.png";
+                        URL url = this.getClass().getResource(path);
+                        ImageIcon icon = new ImageIcon(url);
+                        JLabel temp = matriz_label[i][j];
+                        temp.setIcon(icon);
+                        principal_board[i][j] = new Empty(0);
                     }
                 }
             }
@@ -1089,16 +1083,13 @@ public class Principal extends javax.swing.JFrame {
         if (validBoard(principal_board)) {
             if (validpositionKing(principal_board)) {
                 if (validTabla(principal_board)) {
-                    //////////////////////////////////
                     Movement principal = new Movement(new Empty(0), "0,0", "0,0");
                     Tree root = new Tree(new Mapping(principal_board, principal));
                     mapping(root.getRoot(), 0);
-                    System.out.println(lista_peon.getSize());
                     Menu.setModal(true);
                     Menu.pack();
                     Menu.setLocationRelativeTo(this);
                     Menu.setVisible(true);
-                    //////////////////////////////////
                 } else {
                     JOptionPane.showMessageDialog(this, "Tie! Not enough pieces to win on either side");
                 }
@@ -1111,15 +1102,32 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        // TODO add your handling code here:
+        refresh(lista_peon);
         Show.setModal(true);
         Show.pack();
         Show.setLocationRelativeTo(this);
         Show.setVisible(true);
     }//GEN-LAST:event_jButton3MouseClicked
 
+    public void refresh(LinkedList elements) {
+        textArea.setText("");
+        if (elements.getSize() > 0) {
+            TreeNode router = (TreeNode) elements.at(0);
+            for (int i = 0; i < elements.getSize(); i++) {
+                if (((TreeNode) elements.at(i)).getDepth() < router.getDepth()) {
+                    router = (TreeNode) elements.at(i);
+                }
+            }
+
+            LinkedList tree = router.getBranches();
+            for (int i = router.getBranches().getSize() - 1; i >= 0; i--) {
+                textArea.setText(textArea.getText() + router.getBranches().at(i) + "\n");
+            }
+        }
+    }
+
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
-        // TODO add your handling code here:
+        refresh(knight);
         Show.setModal(true);
         Show.pack();
         Show.setLocationRelativeTo(this);
@@ -1127,7 +1135,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-        // TODO add your handling code here:
+        refresh(queen);
         Show.setModal(true);
         Show.pack();
         Show.setLocationRelativeTo(this);
@@ -1135,12 +1143,16 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
-        // TODO add your handling code here:
+        refresh(check);
         Show.setModal(true);
         Show.pack();
         Show.setLocationRelativeTo(this);
         Show.setVisible(true);
     }//GEN-LAST:event_jButton6MouseClicked
+
+    private void jButton4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4MouseEntered
 
     /**
      * @param args the command line arguments
@@ -1149,7 +1161,7 @@ public class Principal extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1370,20 +1382,30 @@ public class Principal extends javax.swing.JFrame {
         traverse_tree(currentNode, cont);
         if (currentNode.getParent() != null) {
             if (currentNode.getRigthBrother() != null) {
-                mapping(currentNode.getRigthBrother(), cont);
+                mapping(currentNode.getRigthBrother(), cont + 1); //se mueve entre hermanos, al no tener.
             } else if (currentNode.getParent().getRigthBrother() != null) {
                 if (currentNode.getParent().getRigthBrother().getLeftSon() != null) {
-                    mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1);
+                    mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1); // busca el primo, el primer hijo, del padre siguiente.
                 }
-            } else if (currentNode.getParent().getLeftSon().getChildAt(0) != null) {
-                mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1);
+            } else {  //ya no tiene ni primos ni hermanos, es el ultimo del nivel.
+                int deepth = currentNode.getDepth();
+                for (int i = 0; i < deepth; i++) {
+                    currentNode = currentNode.getParent(); // al llegar al nodo final del nivel, sube hasta la raiz n profundidad.
+                }
+                for (int i = 0; i < deepth; i++) {
+                    currentNode = currentNode.getChildAt(0); // baja hasta el primer elemento de ese mismo nivel.
+                }
+                if (currentNode.getLeftSon() != null) {
+                    mapping(currentNode.getLeftSon(), cont + 1); // y aumenta en un nivel para volver a generar el siguiente
+                }
             }
         } else {
-            mapping(currentNode.getChildAt(0), cont + 1);
+            mapping(currentNode.getLeftSon(), cont + 1);
         }
     }
 
     public static void traverse_tree(TreeNode currentNode, int cont) {
+        System.out.println(currentNode.getDepth() + " ======================");
         if (currentNode.getDepth() < 25) {
             int player, enemy;
             if (cont % 2 == 0) {
@@ -1440,20 +1462,20 @@ public class Principal extends javax.swing.JFrame {
                                             Mapping map = new Mapping(board, last);
                                             if (board[k][l] instanceof Pawn) {
                                                 if (k == 0) {
-                                                    lista_peon.push_back(map);
+                                                    lista_peon.push_back(currentNode);
                                                 }
                                             }
 
                                             if (isCheck(board, enemy)) {
-                                                check.push_back(map);
+                                                check.push_back(currentNode);
                                             }
 
                                             if (wasEatKhigth(father_board, board)) {
-                                                knight.push_back(map);
+                                                knight.push_back(currentNode);
                                             }
 
                                             if (wasEatQueen(father_board, board)) {
-                                                queen.push_back(map);
+                                                queen.push_back(currentNode);
                                             }
                                             System.out.println("");
                                             currentNode.addSon(map);
@@ -1487,7 +1509,7 @@ public class Principal extends javax.swing.JFrame {
                                             Movement last = new Movement(board[k][l], coor1, coor2);
                                             Mapping map = new Mapping(board, last);
                                             if (isCheck(board, enemy)) {
-                                                check.push_back(map);
+                                                check.push_back(currentNode);
                                             }
                                             currentNode.addSon(map);
                                             for (int a = 0; a < 8; a++) {
@@ -1506,6 +1528,7 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
+
     }
 
     public static boolean wasEatKhigth(Piece[][] board, Piece[][] board2) {
@@ -1521,7 +1544,7 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
-        return horse1 == horse2;
+        return horse1 != horse2;
     }
 
     public static boolean wasEatQueen(Piece[][] board, Piece[][] board2) {
@@ -1537,7 +1560,7 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
-        return queen1 == queen2;
+        return queen1 != queen2;
     }
 
     public static boolean isCheck(Piece[][] board, int player) {

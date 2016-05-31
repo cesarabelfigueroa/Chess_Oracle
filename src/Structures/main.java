@@ -13,6 +13,7 @@ import Resources.King;
 import Resources.Knight;
 import Resources.Movement;
 import Resources.Queen;
+import static Structures.Principal.traverse_tree;
 
 /**
  *
@@ -37,6 +38,7 @@ public class main {
         principal_board[3][5] = new Pawn(1);
         //principal_board[3][5] = new Pawn(1);
         principal_board[4][4] = new King(1);
+
         Movement principal = new Movement(new Empty(0), "0,0", "0,0");
         Tree root = new Tree(new Mapping(principal_board, principal));
         for (int i = 0; i < 8; i++) {
@@ -47,6 +49,9 @@ public class main {
         }
         mapping(root.getRoot(), 0);
         System.out.println(lista_peon.getSize());
+        System.out.println(knight.getSize());
+        System.out.println(queen.getSize());
+        System.out.println(check.getSize());
     }
 
     public static Piece[][] copy_board(Piece[][] board) {
@@ -63,16 +68,25 @@ public class main {
         traverse_tree(currentNode, cont);
         if (currentNode.getParent() != null) {
             if (currentNode.getRigthBrother() != null) {
-                mapping(currentNode.getRigthBrother(), cont);
+                mapping(currentNode.getRigthBrother(), cont + 1); //se mueve entre hermanos, al no tener.
             } else if (currentNode.getParent().getRigthBrother() != null) {
                 if (currentNode.getParent().getRigthBrother().getLeftSon() != null) {
-                    mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1);
+                    mapping(currentNode.getParent().getRigthBrother().getLeftSon(), cont + 1); // busca el primo, el primer hijo, del padre siguiente.
                 }
-            } else if (currentNode.getParent().getLeftSon().getChildAt(0) != null) {
-                mapping(currentNode.getParent().getLeftSon().getChildAt(0), cont + 1);
+            } else {  //ya no tiene ni primos ni hermanos, es el ultimo del nivel.
+                int deepth = currentNode.getDepth();
+                for (int i = 0; i < deepth; i++) {
+                    currentNode = currentNode.getParent(); // al llegar al nodo final del nivel, sube hasta la raiz n profundidad.
+                }
+                for (int i = 0; i < deepth; i++) {
+                    currentNode = currentNode.getChildAt(0); // baja hasta el primer elemento de ese mismo nivel.
+                }
+                if (currentNode.getLeftSon() != null) {
+                    mapping(currentNode.getLeftSon(), cont + 1); // y aumenta en un nivel para volver a generar el siguiente
+                }
             }
         } else {
-            mapping(currentNode.getChildAt(0), cont + 1);
+            mapping(currentNode.getLeftSon(), cont + 1);
         }
     }
 
@@ -235,7 +249,8 @@ public class main {
                 }
             }
         }
-        return horse1 == horse2;
+ 
+        return horse1 != horse2;
     }
 
     public static boolean wasEatQueen(Piece[][] board, Piece[][] board2) {
@@ -243,15 +258,15 @@ public class main {
         int queen2 = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board[i][j] instanceof Knight) {
+                if (board[i][j] instanceof Queen) {
                     queen1++;
                 }
-                if (board2[i][j] instanceof Knight) {
+                if (board2[i][j] instanceof Queen) {
                     queen2++;
                 }
             }
         }
-        return queen1 == queen2;
+        return queen1 != queen2;
     }
 
     public static boolean isCheck(Piece[][] board, int player) {

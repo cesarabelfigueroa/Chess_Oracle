@@ -26,9 +26,7 @@ public class Tree {
         preOrdenChilld(root);
     }
     
-    public void preOrdenChilld(TreeNode node){
-        
-        System.out.println(node.getValue() +" hijo de : " +( node.getParent() != null ? node.getParent().getValue().toString() : "") + " produnfidad de "+ node.getDepth() );
+    public void preOrdenChilld(TreeNode node){ 
         if(node.getChildrens().getSize() > 0){
             for (int i = 0; i < node.getChildrens().getSize(); i++) {
                 preOrdenChilld((TreeNode)  node.getChildrens().at(i));

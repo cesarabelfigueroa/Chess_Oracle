@@ -72,8 +72,16 @@ public class TreeNode {
         return null;
     }
 
-    public TreeNode getLeftBroter() {
-        return (TreeNode) parent.getChildrens().at(parent.getChildrens().find(this) - 1);
+    public TreeNode getLeftBrother() {
+       if (parent != null) {
+            int index = parent.getChildrens().find(this) - 1;
+            if (index < parent.getChildrens().getSize()) {
+                return (TreeNode) parent.getChildrens().at(index);
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 
     public void addSon(TreeNode son) {
@@ -113,5 +121,11 @@ public class TreeNode {
         }
 
         return branches;
+    }
+    
+    @Override
+    public String toString(){
+        return value.toString();
+    
     }
 }
